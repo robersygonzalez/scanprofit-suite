@@ -1,0 +1,13 @@
+# Dependencias
+node_modules/
+.pnpm-store/
+
+# Compilados
+dist/
+build/
+.next/
+
+# Entorno y logs
+.env
+*.log
+.DS_Store
