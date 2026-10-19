@@ -1,1 +1,1 @@
-{"version":3,"file":"roi-response.dto.js","sourceRoot":"","sources":["../../../../src/modules/analyzer/dto/roi-response.dto.ts"],"names":[],"mappings":";;;AAAA,MAAa,cAAc;IASzB,YAAY,OAAgC;QAC1C,MAAM,CAAC,MAAM,CAAC,IAAI,EAAE,OAAO,CAAC,CAAC;IAC/B,CAAC;CACF;AAZD,wCAYC"}
+{"version":3,"file":"roi-response.dto.js","sourceRoot":"","sources":["../../../../src/modules/analyzer/dto/roi-response.dto.ts"],"names":[],"mappings":";;;AAAA,MAAa,cAAc;IAUzB,YAAY,OAAgC;QAC1C,MAAM,CAAC,MAAM,CAAC,IAAI,EAAE,OAAO,CAAC,CAAC;IAC/B,CAAC;CACF;AAbD,wCAaC"}

@@ -2,6 +2,7 @@ export class RoiResponseDto {
   amazonPrice: number;
   walmartPrice: number;
   shippingCost: number;
+  totalCost: number;
   referralFee: number;
   fbaFee: number;
   netProfit: number;

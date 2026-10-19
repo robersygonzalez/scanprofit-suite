@@ -24,12 +24,14 @@ let AnalyzerService = class AnalyzerService {
         const { amazonPrice, walmartPrice, shippingCost = 0 } = dto;
         const referralFee = amazonPrice * AMAZON_REFERRAL_FEE_RATE;
         const fbaFee = FBA_FIXED_FEE;
-        const netProfit = amazonPrice - referralFee - fbaFee - walmartPrice - shippingCost;
-        const roiPercentage = (netProfit / walmartPrice) * 100;
+        const totalCost = walmartPrice + shippingCost;
+        const netProfit = amazonPrice - referralFee - fbaFee - totalCost;
+        const roiPercentage = (netProfit / totalCost) * 100;
         return new roi_response_dto_1.RoiResponseDto({
             amazonPrice,
             walmartPrice,
             shippingCost,
+            totalCost: Number(totalCost.toFixed(2)),
             referralFee: Number(referralFee.toFixed(2)),
             fbaFee,
             netProfit: Number(netProfit.toFixed(2)),
