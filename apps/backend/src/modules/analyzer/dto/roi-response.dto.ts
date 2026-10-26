@@ -1,4 +1,6 @@
-export class RoiResponseDto {
+import { RoiCalculationResult } from '@scanprofit/shared-types';
+
+export class RoiResponseDto implements RoiCalculationResult {
   amazonPrice: number;
   walmartPrice: number;
   shippingCost: number;

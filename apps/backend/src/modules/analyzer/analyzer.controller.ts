@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Product } from '@scanprofit/shared-types';
 import { AnalyzerService } from './analyzer.service';
 import { AnalyzeProductDto } from './dto/analyze-product.dto';
 import { RoiResponseDto } from './dto/roi-response.dto';
-import { Product } from './interfaces/product.interface';
 
 @Controller('analyzer')
 export class AnalyzerController {

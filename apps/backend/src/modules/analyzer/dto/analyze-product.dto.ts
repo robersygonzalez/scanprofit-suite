@@ -1,6 +1,7 @@
+import { AnalyzeProductInput } from '@scanprofit/shared-types';
 import { IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 
-export class AnalyzeProductDto {
+export class AnalyzeProductDto implements AnalyzeProductInput {
   @IsOptional()
   @IsString()
   upc?: string;

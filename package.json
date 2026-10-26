@@ -1,0 +1,14 @@
+{
+  "name": "scanprofit-suite",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/backend",
+    "packages/shared-types"
+  ],
+  "scripts": {
+    "build:shared-types": "npm run build --workspace=@scanprofit/shared-types",
+    "build:backend": "npm run build --workspace=backend",
+    "build": "npm run build:shared-types && npm run build:backend"
+  }
+}

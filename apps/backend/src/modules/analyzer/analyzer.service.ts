@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Product } from '@scanprofit/shared-types';
 import { KEEPA_MOCK_DATA } from '../../mock-data/keepa-mock.data';
 import { AnalyzeProductDto } from './dto/analyze-product.dto';
 import { RoiResponseDto } from './dto/roi-response.dto';
-import { Product } from './interfaces/product.interface';
 
 const AMAZON_REFERRAL_FEE_RATE = 0.15;
 const FBA_FIXED_FEE = 4.15;
