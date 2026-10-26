@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "ScanProfit Suite",
+  "version": "0.0.1",
+  "description": "Analiza productos de Walmart/Amazon y calcula ROI para arbitraje en tiempo real.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "ScanProfit"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "permissions": ["activeTab", "storage", "scripting", "sidePanel"],
+  "host_permissions": [
+    "https://www.amazon.com/*",
+    "https://www.walmart.com/*"
+  ]
+}
