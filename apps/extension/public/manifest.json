@@ -13,6 +13,7 @@
   "permissions": ["activeTab", "storage", "scripting", "sidePanel"],
   "host_permissions": [
     "https://www.amazon.com/*",
-    "https://www.walmart.com/*"
+    "https://www.walmart.com/*",
+    "http://localhost:3000/*"
   ]
 }
