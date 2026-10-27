@@ -15,5 +15,12 @@
     "https://www.amazon.com/*",
     "https://www.walmart.com/*",
     "http://localhost:3000/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.walmart.com/*", "*://*.amazon.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
   ]
 }

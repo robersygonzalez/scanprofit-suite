@@ -1,14 +1,51 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { RoiCalculationResult } from '@scanprofit/shared-types';
 import { ApiUnreachableError, calculateRoi } from '../services/api';
+import {
+  SCAN_PROFIT_DATA_EXTRACTED,
+  SCAN_PROFIT_REQUEST_DATA,
+  type ExtractedProductData,
+  type ScanProfitMessage,
+} from '../messaging/types';
 
 function App() {
   const [walmartPrice, setWalmartPrice] = useState('0.00');
   const [amazonPrice, setAmazonPrice] = useState('0.00');
   const [shippingCost, setShippingCost] = useState('1.00');
+  const [productCode, setProductCode] = useState<string | null>(null);
   const [result, setResult] = useState<RoiCalculationResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const applyExtractedData = (data: ExtractedProductData) => {
+      if (data.price != null) {
+        if (data.source === 'walmart') setWalmartPrice(data.price.toFixed(2));
+        if (data.source === 'amazon') setAmazonPrice(data.price.toFixed(2));
+      }
+      const code = data.upc ?? data.asin;
+      if (code) setProductCode(code);
+    };
+
+    chrome.tabs?.query({ active: true, currentWindow: true }, (tabs) => {
+      const tabId = tabs[0]?.id;
+      if (!tabId) return;
+
+      chrome.tabs.sendMessage(tabId, { type: SCAN_PROFIT_REQUEST_DATA }, (response) => {
+        if (chrome.runtime.lastError || !response) return;
+        applyExtractedData(response as ExtractedProductData);
+      });
+    });
+
+    const handleMessage = (message: ScanProfitMessage) => {
+      if (message?.type === SCAN_PROFIT_DATA_EXTRACTED) {
+        applyExtractedData(message.payload);
+      }
+    };
+
+    chrome.runtime.onMessage.addListener(handleMessage);
+    return () => chrome.runtime.onMessage.removeListener(handleMessage);
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -20,6 +57,7 @@ function App() {
         walmartPrice: Number(walmartPrice),
         amazonPrice: Number(amazonPrice),
         shippingCost: Number(shippingCost),
+        upc: productCode ?? undefined,
       });
       setResult(roi);
     } catch (err) {
@@ -78,6 +116,12 @@ function App() {
             className="mt-1 rounded border border-slate-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
           />
         </label>
+
+        {productCode && (
+          <p className="text-xs text-slate-500">
+            Código detectado: <span className="font-medium text-slate-700">{productCode}</span>
+          </p>
+        )}
 
         <button
           type="submit"
