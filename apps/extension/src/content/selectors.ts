@@ -9,6 +9,18 @@ export const WALMART_PRICE_SELECTORS = [
 
 export const WALMART_PRICE_META_SELECTORS = ['meta[itemprop="price"]'] as const;
 
+export const WALMART_TITLE_SELECTORS = [
+  'h1[itemprop="name"]',
+  'h1[data-testid="product-title"]',
+  'h1#main-title',
+] as const;
+
+export const WALMART_DETAIL_CONTAINER_SELECTORS = [
+  'div[data-testid="product-specifications"] tr',
+  'div[data-testid="specification-table"] tr',
+  '#specifications tr',
+] as const;
+
 export const AMAZON_PRICE_SELECTORS = [
   '#corePriceDisplay_desktop_feature_div .a-price .a-offscreen',
   '#corePrice_feature_div .a-price .a-offscreen',
@@ -31,3 +43,5 @@ export const AMAZON_DETAIL_CONTAINER_SELECTORS = [
   '#prodDetails tr',
   '#detailBullets_feature_div li',
 ] as const;
+
+export const AMAZON_TITLE_SELECTORS = ['#productTitle'] as const;

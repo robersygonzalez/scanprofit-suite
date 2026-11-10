@@ -6,5 +6,6 @@ export declare class AnalyzerController {
     private readonly analyzerService;
     constructor(analyzerService: AnalyzerService);
     findByUpc(upc: string): Product;
+    search(upc?: string, title?: string): Product;
     calculate(analyzeProductDto: AnalyzeProductDto): RoiResponseDto;
 }

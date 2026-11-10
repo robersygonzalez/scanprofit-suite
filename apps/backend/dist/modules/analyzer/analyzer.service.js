@@ -12,11 +12,50 @@ const keepa_mock_data_1 = require("../../mock-data/keepa-mock.data");
 const roi_response_dto_1 = require("./dto/roi-response.dto");
 const AMAZON_REFERRAL_FEE_RATE = 0.15;
 const FBA_FIXED_FEE = 4.15;
+const TITLE_MATCH_MIN_WORD_LENGTH = 3;
+const TITLE_MATCH_THRESHOLD = 0.5;
 let AnalyzerService = class AnalyzerService {
     findByUpc(upc) {
         const product = keepa_mock_data_1.KEEPA_MOCK_DATA.find((item) => item.upc === upc);
         if (!product) {
             throw new common_1.NotFoundException(`Product with UPC ${upc} not found`);
+        }
+        return product;
+    }
+    normalizeTitle(value) {
+        return value
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, ' ')
+            .split(' ')
+            .filter((word) => word.length >= TITLE_MATCH_MIN_WORD_LENGTH);
+    }
+    titleMatchScore(query, candidate) {
+        const queryWords = new Set(this.normalizeTitle(query));
+        if (queryWords.size === 0)
+            return 0;
+        const candidateWords = new Set(this.normalizeTitle(candidate));
+        let matches = 0;
+        for (const word of queryWords) {
+            if (candidateWords.has(word))
+                matches += 1;
+        }
+        return matches / queryWords.size;
+    }
+    findByTitle(title) {
+        let best = null;
+        for (const product of keepa_mock_data_1.KEEPA_MOCK_DATA) {
+            const score = this.titleMatchScore(title, product.title);
+            if (score >= TITLE_MATCH_THRESHOLD && (!best || score > best.score)) {
+                best = { product, score };
+            }
+        }
+        return best?.product ?? null;
+    }
+    search(upc, title) {
+        const byUpc = upc ? keepa_mock_data_1.KEEPA_MOCK_DATA.find((item) => item.upc === upc) : undefined;
+        const product = byUpc ?? (title ? this.findByTitle(title) : null);
+        if (!product) {
+            throw new common_1.NotFoundException('No se encontró un producto de Amazon equivalente por UPC ni título.');
         }
         return product;
     }

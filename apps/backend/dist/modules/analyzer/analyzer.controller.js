@@ -24,6 +24,9 @@ let AnalyzerController = class AnalyzerController {
     findByUpc(upc) {
         return this.analyzerService.findByUpc(upc);
     }
+    search(upc, title) {
+        return this.analyzerService.search(upc, title);
+    }
     calculate(analyzeProductDto) {
         return this.analyzerService.calculateFbaMetrics(analyzeProductDto);
     }
@@ -36,6 +39,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Object)
 ], AnalyzerController.prototype, "findByUpc", null);
+__decorate([
+    (0, common_1.Get)('search'),
+    __param(0, (0, common_1.Query)('upc')),
+    __param(1, (0, common_1.Query)('title')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Object)
+], AnalyzerController.prototype, "search", null);
 __decorate([
     (0, common_1.Post)('calculate'),
     __param(0, (0, common_1.Body)()),

@@ -6,6 +6,7 @@ export interface ExtractedProductData {
   price: number | null;
   upc: string | null;
   asin: string | null;
+  title: string | null;
 }
 
 export const SCAN_PROFIT_DATA_EXTRACTED = 'SCAN_PROFIT_DATA_EXTRACTED';

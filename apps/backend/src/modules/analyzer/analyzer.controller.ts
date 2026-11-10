@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { Product } from '@scanprofit/shared-types';
 import { AnalyzerService } from './analyzer.service';
 import { AnalyzeProductDto } from './dto/analyze-product.dto';
@@ -11,6 +11,11 @@ export class AnalyzerController {
   @Get('upc/:upc')
   findByUpc(@Param('upc') upc: string): Product {
     return this.analyzerService.findByUpc(upc);
+  }
+
+  @Get('search')
+  search(@Query('upc') upc?: string, @Query('title') title?: string): Product {
+    return this.analyzerService.search(upc, title);
   }
 
   @Post('calculate')

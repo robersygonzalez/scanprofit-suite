@@ -21,7 +21,7 @@ function safeExtract(source: MarketplaceSource): ExtractedProductData {
     return source === 'walmart' ? extractWalmartData() : extractAmazonData();
   } catch {
     // Si la extracción falla, se devuelven campos vacíos para que el usuario los complete a mano.
-    return { source, url: location.href, price: null, upc: null, asin: null };
+    return { source, url: location.href, price: null, upc: null, asin: null, title: null };
   }
 }
 

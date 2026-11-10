@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { RoiCalculationResult } from '@scanprofit/shared-types';
-import { ApiUnreachableError, calculateRoi } from '../services/api';
+import { ApiUnreachableError, calculateRoi, searchAmazonProduct } from '../services/api';
 import {
   SCAN_PROFIT_DATA_EXTRACTED,
   SCAN_PROFIT_REQUEST_DATA,
@@ -16,8 +16,37 @@ function App() {
   const [result, setResult] = useState<RoiCalculationResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [matchedAmazonTitle, setMatchedAmazonTitle] = useState<string | null>(null);
+  const [searchingAmazon, setSearchingAmazon] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   useEffect(() => {
+    const autoFillAmazonPrice = async (upc: string | null, title: string | null) => {
+      setSearchingAmazon(true);
+      setSearchError(null);
+
+      try {
+        const product = await searchAmazonProduct({ upc, title });
+        if (product) {
+          setAmazonPrice(product.amazonPrice.toFixed(2));
+          setMatchedAmazonTitle(product.title);
+        } else {
+          setMatchedAmazonTitle(null);
+        }
+      } catch (err) {
+        setMatchedAmazonTitle(null);
+        setSearchError(
+          err instanceof ApiUnreachableError
+            ? err.message
+            : err instanceof Error
+              ? err.message
+              : 'No se pudo buscar el producto equivalente en Amazon.',
+        );
+      } finally {
+        setSearchingAmazon(false);
+      }
+    };
+
     const applyExtractedData = (data: ExtractedProductData) => {
       if (data.price != null) {
         if (data.source === 'walmart') setWalmartPrice(data.price.toFixed(2));
@@ -25,6 +54,10 @@ function App() {
       }
       const code = data.upc ?? data.asin;
       if (code) setProductCode(code);
+
+      if (data.source === 'walmart' && (data.upc || data.title)) {
+        void autoFillAmazonPrice(data.upc, data.title);
+      }
     };
 
     chrome.tabs?.query({ active: true, currentWindow: true }, (tabs) => {
@@ -121,6 +154,20 @@ function App() {
           <p className="text-xs text-slate-500">
             Código detectado: <span className="font-medium text-slate-700">{productCode}</span>
           </p>
+        )}
+
+        {searchingAmazon && (
+          <p className="text-xs text-slate-500">Buscando producto equivalente en Amazon...</p>
+        )}
+
+        {!searchingAmazon && matchedAmazonTitle && (
+          <p className="text-xs text-emerald-600">
+            Precio Amazon autocompletado: <span className="font-medium">{matchedAmazonTitle}</span>
+          </p>
+        )}
+
+        {!searchingAmazon && searchError && (
+          <p className="text-xs text-amber-600">{searchError}</p>
         )}
 
         <button
