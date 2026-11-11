@@ -19,11 +19,13 @@ function App() {
   const [matchedAmazonTitle, setMatchedAmazonTitle] = useState<string | null>(null);
   const [searchingAmazon, setSearchingAmazon] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [notFoundInAmazon, setNotFoundInAmazon] = useState(false);
 
   useEffect(() => {
     const autoFillAmazonPrice = async (upc: string | null, title: string | null) => {
       setSearchingAmazon(true);
       setSearchError(null);
+      setNotFoundInAmazon(false);
 
       try {
         const product = await searchAmazonProduct({ upc, title });
@@ -32,6 +34,7 @@ function App() {
           setMatchedAmazonTitle(product.title);
         } else {
           setMatchedAmazonTitle(null);
+          setNotFoundInAmazon(true);
         }
       } catch (err) {
         setMatchedAmazonTitle(null);
@@ -168,6 +171,10 @@ function App() {
 
         {!searchingAmazon && searchError && (
           <p className="text-xs text-amber-600">{searchError}</p>
+        )}
+
+        {!searchingAmazon && !searchError && notFoundInAmazon && (
+          <p className="text-xs text-slate-500">No encontrado en Amazon</p>
         )}
 
         <button

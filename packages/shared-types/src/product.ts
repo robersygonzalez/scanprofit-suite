@@ -4,4 +4,7 @@ export interface Product {
   bsr: number;
   amazonPrice: number;
   imageUrl: string;
+  asin?: string;
+  referralFee?: number;
+  fbaFee?: number;
 }

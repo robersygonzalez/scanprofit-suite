@@ -14,6 +14,17 @@ const AMAZON_REFERRAL_FEE_RATE = 0.15;
 const FBA_FIXED_FEE = 4.15;
 const TITLE_MATCH_MIN_WORD_LENGTH = 3;
 const TITLE_MATCH_THRESHOLD = 0.5;
+const LIGHTING_KEYWORDS = ['luz', 'luces', 'solar', 'lampara', 'granero', 'street'];
+const LIGHTING_MOCK_PRODUCT = {
+    upc: '000000000000',
+    title: 'Solar Barn Street Light - Lámpara Solar de Granero',
+    bsr: 1500,
+    amazonPrice: 59.99,
+    imageUrl: 'https://m.media-amazon.com/images/I/71SolarBarnLight._AC_SL1500_.jpg',
+    asin: 'B09X123456',
+    referralFee: 9.0,
+    fbaFee: 5.5,
+};
 let AnalyzerService = class AnalyzerService {
     findByUpc(upc) {
         const product = keepa_mock_data_1.KEEPA_MOCK_DATA.find((item) => item.upc === upc);
@@ -22,12 +33,20 @@ let AnalyzerService = class AnalyzerService {
         }
         return product;
     }
+    stripAccents(value) {
+        const combiningDiacritics = new RegExp('[\\u0300-\\u036f]', 'g');
+        return value.normalize('NFD').replace(combiningDiacritics, '');
+    }
     normalizeTitle(value) {
-        return value
+        return this.stripAccents(value)
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, ' ')
             .split(' ')
             .filter((word) => word.length >= TITLE_MATCH_MIN_WORD_LENGTH);
+    }
+    matchesLightingKeyword(title) {
+        const words = new Set(this.normalizeTitle(title));
+        return LIGHTING_KEYWORDS.some((keyword) => words.has(keyword));
     }
     titleMatchScore(query, candidate) {
         const queryWords = new Set(this.normalizeTitle(query));
@@ -42,6 +61,9 @@ let AnalyzerService = class AnalyzerService {
         return matches / queryWords.size;
     }
     findByTitle(title) {
+        if (this.matchesLightingKeyword(title)) {
+            return LIGHTING_MOCK_PRODUCT;
+        }
         let best = null;
         for (const product of keepa_mock_data_1.KEEPA_MOCK_DATA) {
             const score = this.titleMatchScore(title, product.title);
